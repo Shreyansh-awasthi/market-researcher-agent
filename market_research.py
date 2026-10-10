@@ -99,15 +99,22 @@ async def process_pipeline(user_query: str):
     print("Assistant Output Begin")
     final_prompt = f"User Request: {user_query}\nFetched Background Context:\n{tool_context}"
     
-    try:
-        response = intelligence_unit.run(final_prompt)
-        print(response.content)
-    except Exception:
+    executed = False
+    if "RESOURCE_EXHAUSTED" not in str(tool_context):
+        try:
+            response = intelligence_unit.run(final_prompt)
+            print(response.content)
+            executed = True
+        except Exception as e:
+            if "429" in str(e) or "quota" in str(e).lower() or "exhausted" in str(e).lower():
+                pass
+
+    if not executed:
         try:
             fallback_response = fallback_unit.run(final_prompt)
             print(fallback_response.content)
         except Exception as e:
-            print(f"Synthesis completely unavailable: {str(e)}")
+            print(f"Synthesis completely unavailable due to multi-provider limits: {str(e)}")
             
     print("Assistant Output End")
 
