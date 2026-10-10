@@ -1,334 +1,195 @@
-import sys
-import subprocess
-import streamlit as st
-import base64
+import html
+import json
 
-st.set_page_config(
-    page_title="VeloQuant AI",
-    page_icon="⚡",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+import streamlit as st
+
+from market_research import (
+    high_speed_router,
+    intelligence_unit,
+    fallback_unit,
+    yfinance_toolkit,
+    duckduckgo_toolkit,
 )
 
-st.markdown("""
-    <style>
-    @import url('https://googleapis.com');
-    
-    html, body, [class*="css"], .stApp {
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
-        background: radial-gradient(circle at 50% -20%, #0f172a 0%, #020617 80%) !important;
-        color: #f8fafc !important;
-    }
-    
-    .stTextInput > div > div > input {
-        background-color: rgba(15, 23, 42, 0.6) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 16px !important;
-        padding: 16px 20px !important;
-        font-size: 16px !important;
-        backdrop-filter: blur(12px) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .stTextInput > div > div > input:focus {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-    }
-    
-    .stButton > button {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 16px !important;
-        padding: 16px 32px !important;
-        font-weight: 700 !important;
-        font-size: 16px !important;
-        width: 100% !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.4) !important;
-        border-color: rgba(255, 255, 255, 0.2) !important;
-    }
-    
-    .header-panel {
-        text-align: center;
-        padding: 60px 0 40px 0;
-        margin-bottom: 30px;
-    }
-    
-    .brand-title {
-        font-size: 56px !important;
-        font-weight: 800 !important;
-        background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 14px;
-        letter-spacing: -0.06em;
-    }
-    
-    .brand-subtitle {
-        color: #64748b !important;
-        font-size: 19px !important;
-        font-weight: 500;
-        letter-spacing: -0.02em;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-    
-    .report-card {
-        background: rgba(15, 23, 42, 0.4) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        border-radius: 24px !important;
-        padding: 40px !important;
-        margin-top: 35px !important;
-        backdrop-filter: blur(20px) !important;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-    }
-    
-    .query-badge {
-        background: linear-gradient(90deg, rgba(37, 99, 235, 0.15), rgba(29, 78, 216, 0.05)) !important;
-        color: #3b82f6 !important;
-        padding: 8px 18px !important;
-        border-radius: 100px !important;
-        font-size: 13px !important;
-        font-weight: 700 !important;
-        border: 1px solid rgba(37, 99, 235, 0.25) !important;
-        display: inline-block !important;
-        margin-bottom: 25px !important;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-    }
-    
-    .pdf-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(30, 41, 59, 0.5) !important;
-        color: #f8fafc !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        padding: 12px 24px;
-        font-size: 14px;
-        font-weight: 600;
-        border-radius: 12px;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        margin-top: 25px;
-        backdrop-filter: blur(8px);
-    }
-    
-    .pdf-btn:hover {
-        background: rgba(51, 65, 85, 0.8) !important;
-        border-color: rgba(255, 255, 255, 0.15) !important;
-        color: #ffffff !important;
-        transform: translateY(-1px);
-    }
-    
-    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.04em !important;
-        margin-top: 30px !important;
-        background: linear-gradient(to right, #ffffff, #cbd5e1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    .stMarkdown li {
-        color: #cbd5e1 !important;
-        font-size: 16px !important;
-        line-height: 1.8 !important;
-        margin-bottom: 12px !important;
-    }
-    
-    .stMarkdown strong {
-        color: #60a5fa !important;
-        font-weight: 600;
-    }
-    
-    div[data-testid="stExpander"] {
-        background: rgba(15, 23, 42, 0.2) !important;
-        border: 1px solid rgba(255, 255, 255, 0.04) !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-    }
-    
-    .clear-btn > button {
-        background: transparent !important;
-        color: #64748b !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        border-radius: 12px !important;
-        padding: 8px 16px !important;
-        font-size: 13px !important;
-        font-weight: 500 !important;
-        transition: all 0.2s ease !important;
-        width: auto !important;
-        float: right;
-    }
-    
-    .clear-btn > button:hover {
-        color: #ef4444 !important;
-        border-color: rgba(239, 68, 68, 0.2) !important;
-        background: rgba(239, 68, 68, 0.05) !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+st.set_page_config(page_title="Market Desk", page_icon="📈", layout="centered")
+
+st.markdown(
+    """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&display=swap');
+
+html, body, [class*="st-"], .stApp {
+    font-family: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+#MainMenu, footer, header[data-testid="stHeader"] { visibility: hidden; height: 0; }
+.block-container { max-width: 760px; padding-top: 1.5rem; padding-bottom: 6rem; }
+
+.desk-header { padding-bottom: 14px; margin-bottom: 18px; border-bottom: 1px solid rgba(128,138,150,.3); }
+.desk-header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -.01em; margin: 0; padding: 0; }
+.desk-header p { margin: 2px 0 0; opacity: .65; font-size: .92rem; }
+
+.empty-state h2 { font-size: 1.55rem; font-weight: 700; letter-spacing: -.02em; margin: 24px 0 8px; }
+.empty-state p { opacity: .7; line-height: 1.5; max-width: 480px; margin: 0 0 14px; }
+
+.meta { display: flex; gap: 8px; margin-bottom: 6px; font-size: .78rem; }
+.tag { border: 1px solid rgba(128,138,150,.45); border-radius: 6px; padding: 1px 8px; opacity: .85; }
+.tag.warn { color: #c47a14; border-color: #c47a14; opacity: 1; }
+
+[data-testid="stChatMessage"] {
+    border: 1px solid rgba(128,138,150,.25);
+    border-radius: 6px 16px 16px 16px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+}
+[data-testid="stChatMessage"] p { line-height: 1.55; }
+[data-testid="stChatMessage"] a { word-break: break-all; }
+
+div[data-testid="stButton"] > button {
+    border-radius: 999px;
+    border: 1px solid rgba(128,138,150,.4);
+    padding: 6px 14px;
+    font-size: .9rem;
+    width: 100%;
+}
+div[data-testid="stButton"] > button:hover { border-color: #2a4fa8; color: #2a4fa8; }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+INTENT_LABELS = {
+    "stock_analysis": "Stock analysis",
+    "web_news": "Web news",
+    "conversational": "Chat",
+}
+
+EXAMPLES = ["NVDA", "TCS stock", "Latest OpenAI news", "SpaceX investment outlook"]
+
+
+def get_tool(toolkit, name):
+    return next(t for t in toolkit.tools if t.__name__ == name)
+
+
+def route(query):
+    meta = {"intent": "conversational", "cleaned_query": query, "requires_web": False}
+    try:
+        raw = high_speed_router.run(query).content.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```json")[-1].replace("```", "").strip()
+        meta.update(json.loads(raw))
+    except Exception:
+        pass
+    return meta
+
+
+def run_pipeline(query):
+    meta = route(query)
+    intent = meta.get("intent", "conversational")
+    cleaned = str(meta.get("cleaned_query", query)).strip()
+    context = ""
+
+    if intent == "stock_analysis":
+        try:
+            context = (
+                f"Stock Ticker Data for {cleaned}:\n"
+                f"Price: {get_tool(yfinance_toolkit, 'get_stock_price')(cleaned)}\n"
+                f"Recommendations: {get_tool(yfinance_toolkit, 'get_analyst_recommendations')(cleaned)}\n"
+                f"Info: {get_tool(yfinance_toolkit, 'get_company_info')(cleaned)}"
+            )
+        except Exception as e:
+            context = f"Failed to acquire stock data: {e}"
+            intent = "web_news"
+
+    q = query.lower()
+    if intent == "web_news" or meta.get("requires_web") or any(k in q for k in ("openai", "spacex", "tcs")):
+        try:
+            results = get_tool(duckduckgo_toolkit, "duckduckgo_search")(f"{cleaned} investment overview")
+            context += f"\n\nLive Web News Context:\n{results}"
+        except Exception as e:
+            context += f"\nSearch execution dropped out: {e}"
+
+    prompt = f"User Request: {query}\nFetched Background Context:\n{context}"
+    try:
+        return {"intent": intent, "ticker": cleaned, "engine": "primary",
+                "answer": intelligence_unit.run(prompt).content}
+    except Exception:
+        try:
+            return {"intent": intent, "ticker": cleaned, "engine": "backup",
+                    "answer": fallback_unit.run(prompt).content}
+        except Exception as e:
+            return {"intent": intent, "ticker": cleaned, "engine": "none",
+                    "answer": f"Both models failed: {e}"}
+
+
+def meta_html(item):
+    label = html.escape(INTENT_LABELS.get(item["intent"], item["intent"]))
+    out = f'<div class="meta"><span class="tag">{label}</span>'
+    if item["intent"] != "conversational" and item.get("ticker"):
+        out += f'<span class="tag">{html.escape(item["ticker"])}</span>'
+    if item["engine"] == "backup":
+        out += '<span class="tag warn">Backup model</span>'
+    return out + "</div>"
+
+
+def queue_example(text):
+    st.session_state.queued = text
+
 
 if "history" not in st.session_state:
     st.session_state.history = []
 
-st.markdown("""
-    <div class="header-panel">
-        <div class="brand-title">VeloQuant AI Engine</div>
-        <div class="brand-subtitle">High-speed dual-brain network synthesis for deep competitor cross-examinations and market vectors</div>
-    </div>
-""", unsafe_allow_html=True)
+st.markdown(
+    """
+<div class="desk-header">
+  <h1>Market Desk</h1>
+  <p>Ask about a stock or a company's latest news.</p>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
-col1, col2 = st.columns([5, 1])
-
-with col1:
-    user_query = st.text_input(
-        label="Search Query",
-        label_visibility="collapsed",
-        placeholder="Compare valuation of openai and anthropic in deep..."
+if not st.session_state.history:
+    st.markdown(
+        """
+<div class="empty-state">
+  <h2>What do you want to look into?</h2>
+  <p>Enter a ticker for price, analyst ratings and company info, or name a company for recent news.</p>
+</div>
+""",
+        unsafe_allow_html=True,
     )
+    cols = st.columns(len(EXAMPLES))
+    for col, text in zip(cols, EXAMPLES):
+        col.button(text, key=f"ex_{text}", on_click=queue_example, args=(text,))
 
-with col2:
-    submit_button = st.button("Analyze Engine")
+for item in st.session_state.history:
+    if item["role"] == "user":
+        with st.chat_message("user"):
+            st.markdown(item["content"])
+    else:
+        with st.chat_message("assistant"):
+            st.markdown(meta_html(item), unsafe_allow_html=True)
+            st.markdown(item["content"])
 
-def build_pdf_data(text_content, query_title):
-    try:
-        from reportlab.lib.pagesizes import letter
-        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib import colors
-        import io
+typed = st.chat_input("Try \"NVDA\" or \"latest SpaceX news\"")
+prompt = typed or st.session_state.pop("queued", None)
 
-        pdf_buffer = io.BytesIO()
-        doc = SimpleDocTemplate(pdf_buffer, pagesize=letter, rightMargin=54, leftMargin=54, topMargin=54, bottomMargin=54, title="AlphaRoute Intelligence Data")
-        styles = getSampleStyleSheet()
-        
-        custom_title = ParagraphStyle(
-            'PDFTitle',
-            parent=styles['Heading1'],
-            fontName='Helvetica-Bold',
-            fontSize=22,
-            leading=26,
-            textColor=colors.HexColor('#0f172a'),
-            spaceAfter=15
-        )
-        
-        custom_body = ParagraphStyle(
-            'PDFBody',
-            parent=styles['BodyText'],
-            fontName='Helvetica',
-            fontSize=10.5,
-            leading=16,
-            textColor=colors.HexColor('#334155'),
-            spaceAfter=8
-        )
-        
-        story = []
-        story.append(Paragraph(f"AlphaRoute Intelligence Target Analysis: {query_title}", custom_title))
-        story.append(Spacer(1, 15))
-        
-        paragraphs = text_content.split('\n')
-        for p in paragraphs:
-            if p.strip():
-                clean_p = p.replace('•', '').replace('*', '').strip()
-                story.append(Paragraph(clean_p, custom_body))
-                
-        doc.build(story)
-        pdf_data = pdf_buffer.getvalue()
-        pdf_buffer.close()
-        return pdf_data
-    except Exception:
-        return None
+if prompt:
+    st.session_state.history.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-if submit_button and user_query:
-    with st.spinner("Executing asymmetric micro-routing and pipeline compilation..."):
-        try:
-            process = subprocess.Popen(
-                [sys.executable, "market_research.py"],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                encoding='utf-8'
-            )
-            
-            stdout, stderr = process.communicate(input=f"{user_query}\nexit\n", timeout=180)
-            
-            if "Assistant Output Begin" in stdout:
-                raw_report = stdout.split("Assistant Output Begin")[-1].split("Assistant Output End")[0].strip()
-            else:
-                raw_report = stdout.strip()
+    with st.chat_message("assistant"):
+        with st.spinner("Pulling data and writing the summary..."):
+            result = run_pipeline(prompt)
+        st.markdown(meta_html(result), unsafe_allow_html=True)
+        st.markdown(result["answer"])
 
-            clean_lines = []
-            for line in raw_report.split("\n"):
-                line_stripped = line.strip()
-                if not line_stripped:
-                    continue
-                if any(x in line_stripped for x in ["[Fast Router]", "Route Match:", "Executing native", "[System Notice]", "Response ("]):
-                    continue
-                if line_stripped.startswith("│"):
-                    line_stripped = line_stripped.lstrip("│").rstrip("│").strip()
-                if any(c in line_stripped for c in ["┌", "└", "─", "━", "┏", "┗", "┃"]):
-                    continue
-                clean_lines.append(line_stripped)
-            
-            final_report = "\n".join(clean_lines).strip()
-
-            if final_report:
-                st.session_state.history.append({
-                    "query": user_query,
-                    "report": final_report                })
-            else:
-                if stderr:
-                    st.error(f"Pipeline Execution Error: {stderr}")
-                else:
-                    st.warning("The analysis returned an empty response. Verify your API keys.")
-
-        except subprocess.TimeoutExpired:
-            process.kill()
-            st.error("The background data pipeline timed out while fetching live market assets.")
-        except Exception as e:
-            st.error(f"Failed to connect to backend script: {str(e)}")
-
-if st.session_state.history:
-    st.markdown("<br>", unsafe_allow_html=True)
-    h_col1, h_col2 = st.columns([5, 1])
-    
-    with h_col1:
-        st.markdown("<h3 style='margin: 0;'>Intelligence Reports</h3>", unsafe_allow_html=True)
-    with h_col2:
-        st.markdown('<div class="clear-btn">', unsafe_allow_html=True)
-        if st.button("Clear Audits"):
-            st.session_state.history = []
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    for idx, item in enumerate(reversed(st.session_state.history)):
-        if idx == 0:
-            st.markdown(f"""
-                <div class="report-card">
-                    <div class="query-badge">Target System Vector: {item['query']}</div>
-            """, unsafe_allow_html=True)
-            st.markdown(item['report'])
-            
-            pdf_bytes = build_pdf_data(item['report'], item['query'])
-            if pdf_bytes:
-                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-                pdf_href = f'<a href="data:application/pdf;base64,{b64_pdf}" download="Report_{item["query"].replace(" ", "_")}.pdf" class="pdf-btn">📥 Export Audit Sheet (PDF)</a>'
-                st.markdown(pdf_href, unsafe_allow_html=True)
-            st.markdown("</div><br>", unsafe_allow_html=True)
-        else:
-            with st.expander(f"Historical Audit Block: {item['query']}", expanded=False):
-                st.markdown(item['report'])
-
-                              
+    st.session_state.history.append({
+        "role": "assistant",
+        "content": result["answer"],
+        "intent": result["intent"],
+        "ticker": result["ticker"],
+        "engine": result["engine"],
+    })
+    st.rerun()
