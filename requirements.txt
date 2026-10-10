@@ -1,0 +1,8 @@
+agno
+yfinance
+duckduckgo-search
+python-dotenv
+streamlit
+reportlab
+pydantic
+asyncio
