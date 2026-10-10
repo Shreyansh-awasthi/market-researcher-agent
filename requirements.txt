@@ -8,3 +8,4 @@ pydantic
 asyncio
 google-genai
 groq
+ddgs
