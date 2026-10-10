@@ -7,3 +7,4 @@ reportlab
 pydantic
 asyncio
 google-genai
+groq
