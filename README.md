@@ -1,39 +1,39 @@
-# NexusVect AI Engine
+# VeloQuant AI Engine
 
-A high-speed, dual-brain AI market intelligence hub built with the Agno AI framework. This application bypasses standard multi-agent orchestration delays by combining a lightning-fast Groq pre-processor with a deep synthesis Gemini engine to deliver sub-second financial and competitor research.
+VeloQuant AI is an enterprise-grade quantitative market intelligence platform powered by the Agno AI framework. Engineered to bypass standard multi-agent coordination delays, the system utilizes a high-speed parallel routing architecture that couples a sub-100ms Llama/Qwen pre-processor on Groq with a deep synthesis Gemini engine to deliver near-instant, tool-grounded financial analytics and competitor cross-examinations.
 
 ## System Architecture
 
-- **High-Speed Classifier (Groq / Qwen 27B)**: Instantly processes natural language inputs, strips conversational filler, and isolates targets into structural JSON parameters.
-- **Native Execution Layer**: Bypasses the intermediate LLM reasoning loop to trigger background tools (Yahoo Finance and DuckDuckGo) directly as native Python functions.
-- **Deep Synthesis Engine (Gemini 3.8 Flash)**: Consolidates the structural tool context into professional analytical reports. Includes an automated recovery circuit that activates a backup processor if primary API demand spikes.
-- **Premium Frontend Dashboard (Streamlit & CSS)**: A dark-themed web platform equipped with dynamic data formatting, an audit sheet log, and automated ReportLab PDF document compilation.
+- **High-Speed Classification Vector (Groq / Qwen 27B)**: Intercepts raw natural language prompts, strips conversational filler, and structure-maps query parameters into deterministic JSON records within milliseconds.
+- **Direct Tool Execution Layer**: Bypasses the traditional LLM loop to execute background extraction toolkits (Yahoo Finance API and DuckDuckGo Indexes) as native Python functions, reducing latency by orders of magnitude.
+- **Deep Synthesis Framework (Gemini 3.8 Flash)**: Consolidates multi-source background payloads into unified investment profiles. Operates with an integrated failure circuit that diverts tasks to a backup processing unit if high-demand server blocks occur.
+- **Sovereign Dashboard Interface (Streamlit & Custom CSS)**: A low-latency web application featuring a responsive dark-themed grid, real-time historical logging, and an on-demand ReportLab PDF compilation module.
 
-## Folder Structure
+## Workspace Topography
 
 ```text
-Market_Research_team/
+VeloQuant_AI/
 │
-├── app.py                  # Streamlit Web UI (HTML, CSS, PDF Engine)
+├── app.py                  # Streamlit Web Core (HTML/CSS Interface & PDF Vector)
 ├── market_research.py      # Core Dual-Brain Data Pipeline (Agno Framework)
-├── requirements.txt        # Production System Dependencies
-└── .env                    # Multi-Provider Security API Credentials
+├── requirements.txt        # Production Dependencies Manifest
+└── .env                    # Isolated Security Access Credentials
 ```
 
-## System Requirements
+## Setup Specification
 
-Ensure you have Python 3.10 or higher installed, then configure the configuration files as follows:
+Ensure your local development machine runs Python 3.10 or higher. Configure your environmental layers exactly as specified below:
 
-### 1. Security Environment (`.env`)
-Create a `.env` file in the root folder containing your target access keys:
+### 1. Environment Variable Configuration (`.env`)
+Create a `.env` file in the root directory to store your API access records securely:
 
 ```env
 GOOGLE_API_KEY=your_actual_gemini_api_key_here
 GROQ_API_KEY=your_actual_groq_api_key_here
 ```
 
-### 2. Dependency List (`requirements.txt`)
-Create a `requirements.txt` file containing the core libraries:
+### 2. Dependency Manifest (`requirements.txt`)
+Establish the foundational library state inside a `requirements.txt` file:
 
 ```text
 agno
@@ -46,42 +46,42 @@ pydantic
 asyncio
 ```
 
-## Setup and Installation
+## System Deployment
 
-1. Open your terminal window and navigate to your project workspace directory:
+1. Initialize your terminal and navigate to the local workspace folder:
    ```bash
    cd C:\Users\ayush\OneDrive\Desktop\Market_Research_team
    ```
 
-2. Initialize your project's clean virtual environment:
+2. Establish an isolated Python virtual environment:
    ```bash
    python -m venv venv
    ```
 
-3. Activate the isolated workspace environment:
+3. Activate the workspace sandbox environment:
    - **Windows PowerShell**: `.\venv\Scripts\Activate.ps1`
    - **Windows Command Prompt**: `.\venv\Scripts\activate.bat`
    - **macOS / Linux**: `source venv/bin/activate`
 
-4. Upgrade the package installer tool and implement the requirements manifest simultaneously:
+4. Upgrade the native package manager and install all system requirements concurrently:
    ```bash
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-## Running the Application
+## Operating the Platform
 
-Launch the frontend dashboard server using the application run script command line:
+Execute the system run command to launch the unified streaming dashboard:
 
 ```bash
 streamlit run app.py
 ```
 
-The system will initialize the dual-brain network routes and launch a secure browser window automatically at `http://localhost:8505`.
+The system will verify the neural network routing tables and automatically launch a secure interface instance in your browser at `http://localhost:8505`.
 
-## Strategic Execution Capabilities
+## Operational Scope
 
-- **Stock Metric Tracking**: Intercepts ticker configurations or company names, translates obscure targets via dynamic lookup, and extracts margins, averages, prices, and consensus profiles instantly.
-- **Competitor Cross-Examinations**: Automatically detects private corporations (e.g., OpenAI, SpaceX, Anthropic), switches routing logic away from traditional financial tools, and queries live search indexes for funding rounds, macro updates, and valuation milestones.
-- **Automated Data Processing**: Strips raw layout borders from target streams to present clean narrative prose in the dashboard web panels.
-- **Export Utility**: Instantly compiles complex data models into professional PDF document formats using the integrated ReportLab flow canvas tool.
+- **Quantitative Stock Audits**: Parses unstructured text queries, standardizes international identifiers using dynamic ticker mapping algorithms (e.g., auto-resolving suffix protocols like `.NS`), and extracts current prices, moving averages, and consensus distributions.
+- **Asymmetric Private Market Inquiries**: Detects non-public targets (e.g., OpenAI, SpaceX, Anthropic), reroutes execution trees away from traditional ticker endpoints, and scrapes web telemetry indexes for funding history and market valuation metrics.
+- **Narrative Data Processing**: Normalizes tool stdout arrays, stripping legacy layout artifacts to deliver clean typography inside the dashboard view.
+- **Document Compilation**: Packages structured system analytics into standard downloadable audit files using ReportLab's layout flow engine.
