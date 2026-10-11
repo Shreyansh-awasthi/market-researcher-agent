@@ -85,3 +85,4 @@ The system will verify the neural network routing tables and automatically launc
 - **Asymmetric Private Market Inquiries**: Detects non-public targets (e.g., OpenAI, SpaceX, Anthropic), reroutes execution trees away from traditional ticker endpoints, and scrapes web telemetry indexes for funding history and market valuation metrics.
 - **Narrative Data Processing**: Normalizes tool stdout arrays, stripping legacy layout artifacts to deliver clean typography inside the dashboard view.
 - **Document Compilation**: Packages structured system analytics into standard downloadable audit files using ReportLab's layout flow engine.
+LIVE DEMO LINK - [https://market-researcher-agent-icy9jbd4rx7vkvdr36lnrx.streamlit.app/]
