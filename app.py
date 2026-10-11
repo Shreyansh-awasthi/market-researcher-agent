@@ -11,7 +11,7 @@ from market_research import (
     duckduckgo_toolkit,
 )
 
-st.set_page_config(page_title="Market Desk", page_icon="📈", layout="centered")
+st.set_page_config(page_title="VeloQuant AI", page_icon="📈", layout="centered")
 
 st.markdown(
     """
